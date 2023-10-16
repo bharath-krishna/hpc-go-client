@@ -1,10 +1,13 @@
 openapi: 3.1.0
 info:
-  description: "Code for logging, authentication with JWT token, e2e tests are added"
+  description: An interface for working with HPC clusters.
   title: HPC Portal - API
   version: 0.0.1
 servers:
-- url: /
+- description: localhost
+  url: http://localhost:8088/
+- description: Dev Server
+  url: https://hpc-portal-api-dev-hpc-portal-hpc-2.hpc.jpw1a.r-local.net/
 paths:
   /api/profile:
     get:

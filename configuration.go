@@ -1,7 +1,7 @@
 /*
 HPC Portal - API
 
-Code for logging, authentication with JWT token, e2e tests are added
+An interface for working with HPC clusters.
 
 API version: 0.0.1
 */
@@ -93,8 +93,12 @@ func NewConfiguration() *Configuration {
 		Debug:            false,
 		Servers:          ServerConfigurations{
 			{
-				URL: "",
-				Description: "No description provided",
+				URL: "http://localhost:8088",
+				Description: "localhost",
+			},
+			{
+				URL: "https://hpc-portal-api-dev-hpc-portal-hpc-2.hpc.jpw1a.r-local.net",
+				Description: "Dev Server",
 			},
 		},
 		OperationServers: map[string]ServerConfigurations{

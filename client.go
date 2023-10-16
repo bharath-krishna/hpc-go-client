@@ -1,7 +1,7 @@
 /*
 HPC Portal - API
 
-Code for logging, authentication with JWT token, e2e tests are added
+An interface for working with HPC clusters.
 
 API version: 0.0.1
 */
