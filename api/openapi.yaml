@@ -1,0 +1,965 @@
+openapi: 3.1.0
+info:
+  description: "Code for logging, authentication with JWT token, e2e tests are added"
+  title: HPC Portal - API
+  version: 0.0.1
+servers:
+- url: /
+paths:
+  /api/profile:
+    get:
+      description: Get user profile
+      operationId: get_profile
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserModel'
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: Get Profile
+      tags:
+      - Profile
+  /api/k8s/clusters:
+    get:
+      description: List Clusters
+      operationId: list_clusters
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: List Clusters
+      tags:
+      - k8s
+      - k8s
+  /api/k8s/cluster/{cluster}/jobs:
+    get:
+      description: Get K8s Job
+      operationId: list_all_jobs
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Get K8s Job
+      tags:
+      - k8s
+  /api/k8s/clusters/{cluster}/namespaces/{namespace}/jobs:
+    get:
+      description: List all jobs in a namespace
+      operationId: list_namespaced_jobs
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: List all jobs in a namespace
+      tags:
+      - k8s
+    post:
+      description: Create K8s Job
+      operationId: create_namespaced_job
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobBody'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Create K8s Job
+      tags:
+      - k8s
+  /api/k8s/cluster/{cluster}/namespace/{namespace}/jobs/template:
+    post:
+      description: Create K8s Job Template
+      operationId: create_namespaced_job_template
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobBody'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Create K8s Job Template
+      tags:
+      - k8s
+  /api/k8s/cluster/{cluster}/namespace/{namespace}/pvcs:
+    get:
+      description: Get PVCs
+      operationId: get_namespaced_pvcs
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Get PVCs
+      tags:
+      - k8s
+  /api/k8s/namespaces:
+    post:
+      description: Create Namespace
+      operationId: create_namespace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNamespace'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Create Namespace
+      tags:
+      - k8s
+  /api/k8s/clusters/{cluster}/users/{username}/namespaces:
+    get:
+      description: "Get namespaces to which use has full permission to create jobs,\
+        \ services and hpclab etc."
+      operationId: get_users_namespaces
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Get users namespaces
+      tags:
+      - k8s
+  /api/k8s/clusters/{cluster}/namespaces/{namespace}/jobsdetails:
+    get:
+      description: Get details of all jobs inside a namespace.
+      operationId: get_job_details
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/JobDetailsResp'
+                type: array
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Get job details
+      tags:
+      - k8s
+  /api/k8s/jobsdetails:
+    get:
+      description: Get details of all jobs in all namespace the user belongs to in
+        all clusters
+      operationId: list_all_job_details
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: Get all job's details in a cluster
+      tags:
+      - k8s
+  /api/k8s/clusters/{cluster}/namespaces/{namespace}/jobs/{job_name}/logshell:
+    get:
+      description: Launch a Cloud shell
+      operationId: get_logshell
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: job_name
+        required: true
+        schema:
+          title: Job Name
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CloudShellResp'
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Launch a Cloud shell
+      tags:
+      - k8s
+    post:
+      description: Launch a Cloud shell
+      operationId: launch_logshell
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: job_name
+        required: true
+        schema:
+          title: Job Name
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Launch a Cloud shell
+      tags:
+      - k8s
+  /api/k8s/clusters/{cluster}/namespaces/{namespace}/jobs/{job_name}/logs:
+    get:
+      description: Get all logs of a pod and do not follow/watch for new logs.
+      operationId: get_logs
+      parameters:
+      - explode: false
+        in: path
+        name: cluster
+        required: true
+        schema:
+          title: Cluster
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: job_name
+        required: true
+        schema:
+          title: Job Name
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                title: Response Get Logs
+                type: string
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Get static logs
+      tags:
+      - k8s
+  /api/admin/users:
+    get:
+      description: List Users
+      operationId: list_users
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+      security:
+      - HTTPBearer: []
+      summary: List Users
+      tags:
+      - admin
+      - admin
+    post:
+      description: Onboard user
+      operationId: onboard_user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OnboardUser'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Onboard user
+      tags:
+      - admin
+  /api/admin/groups:
+    post:
+      operationId: create_kc_group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupBody'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Create Group
+      tags:
+      - admin
+  /api/admin/users/{username}/groups/{group_name}:
+    put:
+      operationId: add_kc_user_to_group
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: group_name
+        required: true
+        schema:
+          title: Group Name
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Add user to group
+      tags:
+      - admin
+  /api/admin/users/{username}/rolemaps/{role_name}:
+    put:
+      operationId: add_kc_user_role
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: role_name
+        required: true
+        schema:
+          title: Role Name
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Add Kc User Role
+      tags:
+      - admin
+  /api/admin/namespace/{namespace}/rbac:
+    post:
+      description: Create roles and rolebindings of namespace
+      operationId: create_users_rbac
+      parameters:
+      - explode: false
+        in: path
+        name: namespace
+        required: true
+        schema:
+          title: Namespace
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Create roles and rolebindings of namespace
+      tags:
+      - admin
+  /api/admin/users/{username}/roles/{role_name}:
+    get:
+      operationId: check_user_roles
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          title: Username
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: role_name
+        required: true
+        schema:
+          title: Role Name
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json: {}
+          description: Successful Response
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      security:
+      - HTTPBearer: []
+      summary: Check if users role exists
+      tags:
+      - admin
+components:
+  schemas:
+    CloudShellResp:
+      example:
+        creation_timestamp: creation_timestamp
+        name: name
+        namespace: namespace
+        command: command
+        url: url
+      properties:
+        name:
+          title: Name
+          type: string
+        namespace:
+          title: Namespace
+          type: string
+        command:
+          title: Command
+          type: string
+        creation_timestamp:
+          title: Creation Timestamp
+          type: string
+        url:
+          title: Url
+          type: string
+      required:
+      - command
+      - creation_timestamp
+      - name
+      - namespace
+      - url
+      title: CloudShellResp
+    CreateGroupBody:
+      example:
+        group_name: group_name
+      properties:
+        group_name:
+          title: Group Name
+          type: string
+      required:
+      - group_name
+      title: CreateGroupBody
+    CreateJobBody:
+      example:
+        args: args
+        image: image
+        shared_mem: shared_mem
+        gpus: gpus
+        name: name
+        namespace: namespace
+        interactive: true
+        description: description
+        distributed: true
+        shared_mem_unit: shared_mem_unit
+        pvc: pvc
+        command: command
+      properties:
+        name:
+          minLength: 1
+          title: Name
+          type: string
+        description:
+          minLength: 0
+          title: Description
+          type: string
+        image:
+          minLength: 1
+          title: Image
+          type: string
+        namespace:
+          minLength: 1
+          title: Namespace
+          type: string
+        gpus:
+          minLength: 0
+          title: Gpus
+          type: string
+        pvc:
+          minLength: 0
+          title: Pvc
+          type: string
+        command:
+          minLength: 0
+          title: Command
+          type: string
+        args:
+          minLength: 0
+          title: Args
+          type: string
+        shared_mem:
+          minLength: 0
+          title: Shared Mem
+          type: string
+        shared_mem_unit:
+          minLength: 0
+          title: Shared Mem Unit
+          type: string
+        distributed:
+          title: Distributed
+          type: boolean
+        interactive:
+          title: Interactive
+          type: boolean
+      required:
+      - args
+      - command
+      - description
+      - distributed
+      - gpus
+      - image
+      - interactive
+      - name
+      - namespace
+      - pvc
+      - shared_mem
+      - shared_mem_unit
+      title: CreateJobBody
+    CreateNamespace:
+      example:
+        cluster: cluster
+        namespace: namespace
+      properties:
+        namespace:
+          title: Namespace
+          type: string
+        cluster:
+          title: Cluster
+          type: string
+      required:
+      - cluster
+      - namespace
+      title: CreateNamespace
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      title: HTTPValidationError
+    JobDetailsResp:
+      example:
+        logShellUrl: logShellUrl
+        cluster: cluster
+        image: image
+        job_id: job_id
+        creation_timestamp: creation_timestamp
+        name: name
+        namespace: namespace
+        command: command
+      properties:
+        cluster:
+          title: Cluster
+          type: string
+        name:
+          title: Name
+          type: string
+        namespace:
+          title: Namespace
+          type: string
+        command:
+          title: Command
+          type: string
+        image:
+          title: Image
+          type: string
+        creation_timestamp:
+          title: Creation Timestamp
+          type: string
+        job_id:
+          title: Job Id
+          type: string
+        logShellUrl:
+          title: Logshellurl
+          type: string
+      required:
+      - cluster
+      - command
+      - creation_timestamp
+      - image
+      - logShellUrl
+      - name
+      - namespace
+      title: JobDetailsResp
+    OnboardUser:
+      example:
+        role_name: role_name
+        cluster: cluster
+        namespace: namespace
+        username: username
+      properties:
+        username:
+          title: Username
+          type: string
+        namespace:
+          title: Namespace
+          type: string
+        cluster:
+          title: Cluster
+          type: string
+        role_name:
+          title: Role Name
+          type: string
+      required:
+      - cluster
+      - namespace
+      - role_name
+      - username
+      title: OnboardUser
+    UserModel:
+      example:
+        sub: sub
+        email_verified: true
+        name: name
+        preferred_username: preferred_username
+        given_name: given_name
+        family_name: family_name
+        email: email
+      properties:
+        sub:
+          title: Sub
+          type: string
+        email_verified:
+          title: Email Verified
+          type: boolean
+        name:
+          title: Name
+          type: string
+        preferred_username:
+          title: Preferred Username
+          type: string
+        given_name:
+          title: Given Name
+          type: string
+        family_name:
+          title: Family Name
+          type: string
+        email:
+          title: Email
+          type: string
+      required:
+      - email
+      - email_verified
+      - family_name
+      - given_name
+      - name
+      - preferred_username
+      - sub
+      title: UserModel
+    ValidationError:
+      properties:
+        loc:
+          items:
+            $ref: '#/components/schemas/ValidationError_loc_inner'
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    ValidationError_loc_inner:
+      anyOf:
+      - type: string
+      - type: integer
+  securitySchemes:
+    HTTPBearer:
+      scheme: bearer
+      type: http
