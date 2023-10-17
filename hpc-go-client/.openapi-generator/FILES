@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 .travis.yml
 README.md
 api/openapi.yaml
@@ -35,7 +34,4 @@ model_user_model.go
 model_validation_error.go
 model_validation_error_loc_inner.go
 response.go
-test/api_admin_test.go
-test/api_k8s_test.go
-test/api_profile_test.go
 utils.go

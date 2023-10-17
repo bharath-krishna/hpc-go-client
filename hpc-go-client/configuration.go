@@ -94,7 +94,11 @@ func NewConfiguration() *Configuration {
 		Servers:          ServerConfigurations{
 			{
 				URL: "http://localhost:8088",
-				Description: "No description provided",
+				Description: "localhost",
+			},
+			{
+				URL: "https://hpc-portal-api-dev-hpc-portal-hpc-2.hpc.jpw1a.r-local.net",
+				Description: "Dev Server",
 			},
 		},
 		OperationServers: map[string]ServerConfigurations{

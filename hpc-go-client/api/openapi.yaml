@@ -4,7 +4,10 @@ info:
   title: HPC Portal - API
   version: 0.0.1
 servers:
-- url: http://localhost:8088/
+- description: localhost
+  url: http://localhost:8088/
+- description: Dev Server
+  url: https://hpc-portal-api-dev-hpc-portal-hpc-2.hpc.jpw1a.r-local.net/
 paths:
   /api/profile:
     get:
